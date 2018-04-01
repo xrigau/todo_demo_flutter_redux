@@ -23,7 +23,7 @@ class ToDoListApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: ToDoListPage(title: 'Flutter Demo Home Page'),
+          home: ToDoListPage(),
         ),
       );
 }

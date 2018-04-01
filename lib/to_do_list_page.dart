@@ -7,22 +7,18 @@ import 'package:todo_demo_flutter_redux/actions.dart';
 import 'package:todo_demo_flutter_redux/to_do_item.dart';
 
 class ToDoListPage extends StatelessWidget {
-  ToDoListPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, _ViewModel>(
         converter: (Store<AppState> store) => _ViewModel.create(store),
         builder: (BuildContext context, _ViewModel viewModel) => Scaffold(
               appBar: AppBar(
-                title: Text(title),
+                title: Text(viewModel.pageTitle),
               ),
               body: ListView(children: viewModel.items.map((_ItemViewModel item) => _createWidget(item)).toList()),
               floatingActionButton: FloatingActionButton(
                 onPressed: viewModel.onNewItem,
                 tooltip: viewModel.newItemToolTip,
-                child: Icon(Icons.add),
+                child: Icon(viewModel.newItemIcon),
               ),
             ),
       );
@@ -38,10 +34,10 @@ class ToDoListPage extends StatelessWidget {
   Widget _createEmptyItemWidget(_EmptyItemViewModel item) => Column(
         children: [
           TextField(
-            onSubmitted: item.onUpdateItemTitle,
+            onSubmitted: item.onCreateItemTitle,
             autofocus: true,
             decoration: new InputDecoration(
-              hintText: item.updateItemToolTip,
+              hintText: item.createItemToolTip,
             ),
           )
         ],
@@ -53,7 +49,7 @@ class ToDoListPage extends StatelessWidget {
           FlatButton(
             onPressed: item.onDeleteItem,
             child: Icon(
-              Icons.delete,
+              item.deleteItemIcon,
               semanticLabel: item.deleteItemToolTip,
             ),
           )
@@ -62,18 +58,20 @@ class ToDoListPage extends StatelessWidget {
 }
 
 class _ViewModel {
+  final String pageTitle;
   final List<_ItemViewModel> items;
   final Function onNewItem;
   final String newItemToolTip;
+  final IconData newItemIcon;
 
-  _ViewModel(this.items, this.onNewItem, this.newItemToolTip);
+  _ViewModel(this.pageTitle, this.items, this.onNewItem, this.newItemToolTip, this.newItemIcon);
 
   factory _ViewModel.create(Store<AppState> store) {
     List<_ItemViewModel> items = store.state.toDos
         .map((ToDoItem item) => _ToDoItemViewModel(item.title, () {
               store.dispatch(RemoveItemAction(item));
               store.dispatch(SaveListAction());
-            }, 'Delete') as _ItemViewModel)
+            }, 'Delete', Icons.delete) as _ItemViewModel)
         .toList();
 
     if (store.state.listState == ListState.listWithNewItem) {
@@ -84,7 +82,7 @@ class _ViewModel {
       }, 'Add'));
     }
 
-    return _ViewModel(items, () => store.dispatch(DisplayListWithNewItemAction()), 'Add new to-do item');
+    return _ViewModel('To Do', items, () => store.dispatch(DisplayListWithNewItemAction()), 'Add new to-do item', Icons.add);
   }
 }
 
@@ -93,10 +91,10 @@ abstract class _ItemViewModel {}
 @immutable
 class _EmptyItemViewModel extends _ItemViewModel {
   final String hint;
-  final Function onUpdateItemTitle;
-  final String updateItemToolTip;
+  final Function onCreateItemTitle;
+  final String createItemToolTip;
 
-  _EmptyItemViewModel(this.hint, this.onUpdateItemTitle, this.updateItemToolTip);
+  _EmptyItemViewModel(this.hint, this.onCreateItemTitle, this.createItemToolTip);
 }
 
 @immutable
@@ -104,6 +102,7 @@ class _ToDoItemViewModel extends _ItemViewModel {
   final String title;
   final Function onDeleteItem;
   final String deleteItemToolTip;
+  final IconData deleteItemIcon;
 
-  _ToDoItemViewModel(this.title, this.onDeleteItem, this.deleteItemToolTip);
+  _ToDoItemViewModel(this.title, this.onDeleteItem, this.deleteItemToolTip, this.deleteItemIcon);
 }
