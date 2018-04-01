@@ -1,18 +1,19 @@
 import 'package:todo_demo_flutter_redux/to_do_item.dart';
 
-class CreateEmptyItemAction {}
-
 class RemoveItemAction {
   final ToDoItem item;
 
   RemoveItemAction(this.item);
 }
 
-class UpdateItemTitleAction {
+class AddItemAction {
   final ToDoItem item;
-  final String title;
 
-  UpdateItemTitleAction(this.item, this.title);
+  AddItemAction(this.item);
 }
+
+class DisplayListOnlyAction {}
+
+class DisplayListWithNewItemAction {}
 
 class SaveListAction {}

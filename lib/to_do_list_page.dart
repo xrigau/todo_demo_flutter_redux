@@ -69,20 +69,22 @@ class _ViewModel {
   _ViewModel(this.items, this.onNewItem, this.newItemToolTip);
 
   factory _ViewModel.create(Store<AppState> store) {
-    List<_ItemViewModel> items = store.state.toDos.map((ToDoItem item) {
-      if (item.isEmpty()) {
-        return _EmptyItemViewModel('Type the next task here', (String newTitle) {
-          store.dispatch(UpdateItemTitleAction(item, newTitle));
-          store.dispatch(SaveListAction());
-        }, 'Add');
-      } else {
-        return _ToDoItemViewModel(item.title, () {
-          store.dispatch(RemoveItemAction(item));
-          store.dispatch(SaveListAction());
-        }, 'Delete');
-      }
-    }).toList();
-    return _ViewModel(items, () => store.dispatch(CreateEmptyItemAction()), 'Add new to-do item');
+    List<_ItemViewModel> items = store.state.toDos
+        .map((ToDoItem item) => _ToDoItemViewModel(item.title, () {
+              store.dispatch(RemoveItemAction(item));
+              store.dispatch(SaveListAction());
+            }, 'Delete') as _ItemViewModel)
+        .toList();
+
+    if (store.state.listState == ListState.listWithNewItem) {
+      items.add(_EmptyItemViewModel('Type the next task here', (String title) {
+        store.dispatch(DisplayListOnlyAction());
+        store.dispatch(AddItemAction(ToDoItem(title)));
+        store.dispatch(SaveListAction());
+      }, 'Add'));
+    }
+
+    return _ViewModel(items, () => store.dispatch(DisplayListWithNewItemAction()), 'Add new to-do item');
   }
 }
 
