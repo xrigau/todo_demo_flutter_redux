@@ -16,7 +16,7 @@ class ToDoListPage extends StatelessWidget {
               ),
               body: ListView(children: viewModel.items.map((_ItemViewModel item) => _createWidget(item)).toList()),
               floatingActionButton: FloatingActionButton(
-                onPressed: viewModel.onNewItem,
+                onPressed: viewModel.onAddItem,
                 tooltip: viewModel.newItemToolTip,
                 child: Icon(viewModel.newItemIcon),
               ),
@@ -34,7 +34,7 @@ class ToDoListPage extends StatelessWidget {
   Widget _createEmptyItemWidget(_EmptyItemViewModel item) => Column(
         children: [
           TextField(
-            onSubmitted: item.onCreateItemTitle,
+            onSubmitted: item.onCreateItem,
             autofocus: true,
             decoration: InputDecoration(
               hintText: item.createItemToolTip,
@@ -60,11 +60,11 @@ class ToDoListPage extends StatelessWidget {
 class _ViewModel {
   final String pageTitle;
   final List<_ItemViewModel> items;
-  final Function onNewItem;
+  final Function() onAddItem;
   final String newItemToolTip;
   final IconData newItemIcon;
 
-  _ViewModel(this.pageTitle, this.items, this.onNewItem, this.newItemToolTip, this.newItemIcon);
+  _ViewModel(this.pageTitle, this.items, this.onAddItem, this.newItemToolTip, this.newItemIcon);
 
   factory _ViewModel.create(Store<AppState> store) {
     List<_ItemViewModel> items = store.state.toDos
@@ -91,16 +91,16 @@ abstract class _ItemViewModel {}
 @immutable
 class _EmptyItemViewModel extends _ItemViewModel {
   final String hint;
-  final Function onCreateItemTitle;
+  final Function(String) onCreateItem;
   final String createItemToolTip;
 
-  _EmptyItemViewModel(this.hint, this.onCreateItemTitle, this.createItemToolTip);
+  _EmptyItemViewModel(this.hint, this.onCreateItem, this.createItemToolTip);
 }
 
 @immutable
 class _ToDoItemViewModel extends _ItemViewModel {
   final String title;
-  final Function onDeleteItem;
+  final Function() onDeleteItem;
   final String deleteItemToolTip;
   final IconData deleteItemIcon;
 
