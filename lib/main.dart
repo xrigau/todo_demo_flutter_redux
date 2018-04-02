@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:todo_demo_flutter_redux/middleware.dart';
+import 'package:todo_demo_flutter_redux/reducers.dart';
 import 'package:todo_demo_flutter_redux/state.dart';
 import 'package:todo_demo_flutter_redux/to_do_list_page.dart';
-import 'package:todo_demo_flutter_redux/reducers.dart';
-import 'package:todo_demo_flutter_redux/middleware.dart';
 
-void main() => runApp(new ToDoListApp());
+void main() => runApp(ToDoListApp());
 
 class ToDoListApp extends StatelessWidget {
-  final Store<AppState> store = new Store<AppState>(
+  final Store<AppState> store = Store<AppState>(
     appReducer,
     initialState: AppState.initial(),
     middleware: createStoreMiddleware(),

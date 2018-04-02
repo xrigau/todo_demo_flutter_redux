@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
-import 'package:todo_demo_flutter_redux/state.dart';
 import 'package:todo_demo_flutter_redux/actions.dart';
+import 'package:todo_demo_flutter_redux/state.dart';
 import 'package:todo_demo_flutter_redux/to_do_item.dart';
 
 class ToDoListPage extends StatelessWidget {
@@ -36,7 +36,7 @@ class ToDoListPage extends StatelessWidget {
           TextField(
             onSubmitted: item.onCreateItemTitle,
             autofocus: true,
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
               hintText: item.createItemToolTip,
             ),
           )
