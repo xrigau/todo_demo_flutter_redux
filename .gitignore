@@ -13,3 +13,4 @@ packages
 captures/
 local.properties
 .gradle
+coverage
